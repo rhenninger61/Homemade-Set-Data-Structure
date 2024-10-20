@@ -1,6 +1,6 @@
 /*
- * Name: [YOUR NAME HERE]
- * South Hills Username: [YOUR SOUTH HILLS USERNAME HERE]
+ * Name: Rachel Henninger
+ * South Hills Username: rhenninger61
  */
 
 #include <iostream>
