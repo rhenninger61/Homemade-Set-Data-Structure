@@ -375,3 +375,5 @@ size_t MySet<T>::median() const
     // find mid-point and return it
     return items[count / 2];
 }
+
+template class MySet<int>;
