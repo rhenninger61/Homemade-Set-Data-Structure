@@ -15,7 +15,12 @@ namespace Set
         T* items; // pointing to a generic list of items
         size_t count = 0; // initializing the size of the list
         size_t capacity = 0; // initializing the capacity to be the same size as count
-
+        // swap()
+        void swap(size_t indexOne, size_t indexTwo) const;
+        // grow()
+        void grow(); // increase capacity when it is reached
+        // shrink()
+        void shrink(); // shrink capacity when it is reached
     public:
         // Getters
         [[nodiscard]] size_t getCount() const; // getter for count
@@ -25,19 +30,13 @@ namespace Set
         MySet();
 
         // Capacity Constructor
-        MySet(const size_t capacity);
+        explicit MySet(const size_t capacity);
 
         //Deconstructor
         ~MySet();
 
         // Indexing
         size_t& operator[](const size_t index);
-
-        // grow()
-        void grow(); // increase capacity when it is reached
-
-        // shrink()
-        void shrink(); // shrink capacity when it is reached
 
         // find() -> item as argument, returns index
         size_t find(const T& item) const;
@@ -55,7 +54,10 @@ namespace Set
         void clear();
 
         // toString()
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
+
+        // median() -> returns the median value of a set
+        [[nodiscard]] size_t median() const;
 
         // ======= SORTING ========
 
@@ -77,12 +79,6 @@ namespace Set
         //oddEven() -> google what this is supposed to look like
         void oddEven() const;
 
-        // ======== ADDITIONAL METHODS ===========
-        // swap()
-        void swap(size_t indexOne, size_t indexTwo) const;
-
-        // median() -> returns the median value of a set
-        size_t median() const;
     };
 }
 

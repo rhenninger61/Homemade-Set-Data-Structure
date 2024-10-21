@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
-#include <bits/ranges_algo.h>
+
 using namespace Set;
 
 // Getters
@@ -205,8 +205,8 @@ void MySet<T>::bubbleSort() const
     }
 }
 
-// ASK NICK -> I think it's right, I just want to double check
-// bidirectionalBubbleSort() -> inner loop carry largest item to the right, inner loop will carry smallest item to the left
+// ASK NICK -> I think it's right, I just want to double-check
+// bidirectionalBubbleSort() -> inner loop carry the largest item to the right, inner loop will carry the smallest item to the left
 template <typename T>
 void MySet<T>::bidirectionalBubbleSort() const
 {
@@ -253,7 +253,7 @@ void MySet<T>::insertionSort() const
     for(size_t i = 1; i < count; ++i)
     {
         size_t j = i - 1;
-        T* temp = items[i]; // references current lowest number so it doesn't get lost
+        T temp = items[i]; // references current lowest number so it doesn't get lost
 
         //looks at element to the left and sees if there is anything greater than it
         // if not true, either the end of the array has been reached or a value has been found that is less than that value
@@ -280,7 +280,7 @@ void MySet<T>::insertionSortVerbose() const
     for(size_t i = 1; i < count; ++i)
     {
         size_t j = i - 1;
-        T* temp = items[i]; // references current lowest number so it doesn't get lost
+        T temp = items[i]; // references current lowest number so it doesn't get lost
 
         //looks at element to the left and sees if there is anything greater than it
         // if not true, either the end of the array has been reached or a value has been found that is less than that value
@@ -355,14 +355,14 @@ void MySet<T>::oddEven() const
 }
 
 // ======== ADDITIONAL METHODS ===========
-// ASK NICK ->  I think it's right, I just want to double check, specifically T* as opposed to just T
+// ASK NICK ->  I think it's right, I just want to double check, specifically T* and *temp as opposed to just T and temp
 // swap()
 template <typename T>
 void MySet<T>::swap(size_t indexOne, size_t indexTwo) const
 {
     T* temp = items[indexOne]; // saves indexOne to temp variable
     items[indexOne] = items[indexTwo]; // assigns value of indexOne to the value at indexTwo
-    items[indexTwo] = temp; //reassigns the value of indexTwo to the value that was saved for indexOne
+    items[indexTwo] = *temp; //reassigns the value of indexTwo to the value that was saved for indexOne
 }
 
 // ASK NICK -> I also think this is correct, but want to double check
