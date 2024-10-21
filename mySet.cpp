@@ -1,5 +1,7 @@
 #include "mySet.h"
 
+#include <iostream>
+#include <ostream>
 #include <stdexcept>
 #include <bits/ranges_algo.h>
 using namespace Set;
@@ -100,6 +102,7 @@ size_t MySet<T>::find(const T& item) const
     return std::string::npos; //std::string::npos returns -1, for checking if an item is not in an array (same type as index)
 }
 
+// ASK NICK -> I think it's right, I just want to double check
 // insert() -> no dupes allowed, only argument is the item itself
 template <typename T>
 void MySet<T>::insert(const T& item)
@@ -115,76 +118,260 @@ void MySet<T>::insert(const T& item)
         grow();
     }
 
-    // inserts at the correct location -> ask nick if this is okay?
-    int left = 0;
-    int right = count - 1;
-    int insertIndex = count;
+    items[count + 1] = item;
+}
 
-    while(left <= right)
+// removeAt() -> takes index as argument
+template <typename T>
+void MySet<T>::removeAt(const size_t index)
+{
+    if(index >= count)
     {
-        int mid = left + (right - left) / 2;
-        if(item == items[mid])
-        {
-            insertIndex = mid;
-            break;
-        }
-        if(items[mid] < item)
-        {
-            left = mid + 1;
-        }
-        else
-        {
-            right = mid - 1;
-            insertIndex = mid;
-        }
+        throw std::out_of_range("Index is out of range");
     }
-    for(size_t i = count; i > insertIndex; --i)
+    for(size_t i = index; i < count - 1; ++i)
     {
-        items[i] = items[i - 1];
+        items[i] = items[i + 1]; // copies everything to the right over to the left one space starting from the desired removal point
     }
-    items[insertIndex] = item;
-    ++count;
+    if(--count < capacity/4) // shrinks capacity to take up less memory if needed
+    {
+        shrink();
+    }
 }
 
 // remove() -> takes item as argument
 template <typename T>
 bool MySet<T>::remove(const T& item)
 {
-    
+    const size_t index = find(item);
+
+    if(index == std::string::npos)
+    {
+        return false;
+    }
+    removeAt(index);
+    return true;
 }
 
-// removeAt() -> takes index as argument
-void removeAt(const size_t index);
-
 // clear() -> clears the set
-void clear();
+template <typename T>
+void MySet<T>::clear()
+{
+    delete[] items;
+    count = 0;
+}
 
 // toString()
-std::string toString() const;
+template <typename T>
+std::string MySet<T>::toString() const
+{
+    if(count == 0)
+    {
+        return "";
+    }
+    std::string str;
+
+    for(size_t i = 0; i < count; ++i)
+    {
+        str += std::to_string(items[i] + " ");
+    }
+    return str;
+}
 
 // ======= SORTING ========
 
 // bubbleSort() -> standard
-void bubbleSort();
+template <typename T>
+void MySet<T>::bubbleSort() const
+{
+    bool sorted = false;
+    int unsortedUntilIndex = count - 1;
 
+    while(sorted == false)
+    {
+        sorted = true; // prove me wrong!
+
+        for(size_t i = 0; i < unsortedUntilIndex; ++i)
+        {
+            if(items[i] > items[i + 1]) // check if value to left is greater than value to the right
+            {
+                // larger value moved to the right
+                swap(items[i], items[i + 1]);
+                sorted = false; // I was proved wrong :(
+            }
+        }
+        // largest value has been sorted and its no longer necessary to look at it
+        --unsortedUntilIndex;
+    }
+}
+
+// ASK NICK -> I think it's right, I just want to double check
 // bidirectionalBubbleSort() -> inner loop carry largest item to the right, inner loop will carry smallest item to the left
-void bidirectionalBubbleSort();
+template <typename T>
+void MySet<T>::bidirectionalBubbleSort() const
+{
+    bool sorted = false;
+    int largeUnsortedUntilIndex = count - 1;
+    int smallUnsortedUntilIndex = 0;
+
+    while(sorted == false)
+    {
+        sorted = true; // prove me wrong!
+
+        // largest -> starts at left and moves right
+        for(size_t i = smallUnsortedUntilIndex; i < largeUnsortedUntilIndex; ++i)
+        {
+            if(items[i] > items[i + 1]) // check if value to right is greater than value to the left
+            {
+                // larger value moved to the right
+                swap(items[i], items[i + 1]);
+                sorted = false; // I was proved wrong :(
+            }
+        }
+        // largest value has been sorted and its no longer necessary to look at it
+        --largeUnsortedUntilIndex;
+
+        // smallest -> starts at right and moves left
+        for(size_t i = largeUnsortedUntilIndex; i > smallUnsortedUntilIndex; --i)
+        {
+            if(items[i] < items[i - 1]) // checks if value to the right is smaller than value to the left
+            {
+                // moves smaller value to the left
+                swap(items[i], items[i - 1]);
+                sorted = false; // I was proved wrong :(
+            }
+        }
+        // smallest value has been sorted and it's no longer necessary to look at it
+        ++smallUnsortedUntilIndex;
+    }
+}
 
 // insertionSort() -> standard
-void insertionSort();
+template <typename T>
+void MySet<T>::insertionSort() const
+{
+    for(size_t i = 1; i < count; ++i)
+    {
+        size_t j = i - 1;
+        T* temp = items[i]; // references current lowest number so it doesn't get lost
 
+        //looks at element to the left and sees if there is anything greater than it
+        // if not true, either the end of the array has been reached or a value has been found that is less than that value
+        for(; j >= 0 && items[j] > items[j + 1]; --j)
+        {
+            // perform a shift to the right
+            items[j + 1] = items[j];
+        }
+
+        // inserts the value to the right of the next lowest number in the array
+        items[j + 1] = temp;
+    }
+}
+
+// ASK NICK -> I'm not 100% sure I put the counters in the right spots
+    // also... why is it mad? I have this comparison in the C# code, is it not necessary in C++?
 // insertionSortVerbose() -> counts the number of copies and comparisons it makes during a sort and displays the totals
-void insertionSortVerbose();
+template <typename T>
+void MySet<T>::insertionSortVerbose() const
+{
+    size_t numberOfCopies = 0;
+    size_t numberOfComparisons = 0;
+
+    for(size_t i = 1; i < count; ++i)
+    {
+        size_t j = i - 1;
+        T* temp = items[i]; // references current lowest number so it doesn't get lost
+
+        //looks at element to the left and sees if there is anything greater than it
+        // if not true, either the end of the array has been reached or a value has been found that is less than that value
+        for(; j >= 0 && items[j] > temp; --j)
+        {
+            // perform a shift to the right
+            items[j + 1] = items[j];
+            numberOfComparisons++;
+        }
+
+        // inserts the value to the right of the next lowest number in the array
+        items[j + 1] = temp;
+        numberOfCopies++;
+    }
+
+    std::cout << "Number of Copies: " << numberOfCopies << std::endl;
+    std::cout << "Number of Comparisons: " << numberOfComparisons << std::endl;
+}
 
 // selectionSort() -> standard
-void selectionSort();
+template <typename T>
+void MySet<T>::selectionSort() const
+{
+    // going left to right through the array
+    for(size_t i = 1; i < count; ++i)
+    {
+        size_t minIndex = i; // min value always starts at the beginning of the array
 
-//oddEven() -> google what this is supposed to look like
-void oddEven();
+        for(size_t j = i + 1; j < count; ++j)
+        {
+            if(items[j] < items[minIndex])// updates to the next smallest amount
+            {
+                minIndex = j;
+            }
+        }
+        if(minIndex != i) // performs a swap if items[j] is smaller than items[i]
+        {
+            swap(items[i], items[minIndex]);
+        }
+    }
+}
+
+// ASK NICK -> I think this is right? Do I need another loop to check the values once they're brought back together?
+//oddEven()
+template <typename T>
+void MySet<T>::oddEven() const
+{
+    bool sorted = false;
+
+    while(sorted == false)
+    {
+        sorted = true;
+
+        //odd index sort
+        for(size_t i = 1; i < count; i+=2)
+        {
+            if(items[i] > items[i + 1]) // checks if value to the right is greater
+            {
+                // larger value moved to the right
+                swap(items[i], items[i + 1]);
+                sorted = false; // I was proved wrong :(
+            }
+        }
+        // even index sort
+        for(size_t i = 0; i < count; i+=2) // checks if value to the right is greater
+        {
+            // larger value moved to the right
+            swap(items[i], items[i + 1]);
+            sorted = false; // I was proved wrong :(
+        }
+    }
+}
 
 // ======== ADDITIONAL METHODS ===========
+// ASK NICK ->  I think it's right, I just want to double check, specifically T* as opposed to just T
 // swap()
-void swap(size_t index);
+template <typename T>
+void MySet<T>::swap(size_t indexOne, size_t indexTwo) const
+{
+    T* temp = items[indexOne]; // saves indexOne to temp variable
+    items[indexOne] = items[indexTwo]; // assigns value of indexOne to the value at indexTwo
+    items[indexTwo] = temp; //reassigns the value of indexTwo to the value that was saved for indexOne
+}
 
-// median() -> returns the median value of a set
-void median();
+// ASK NICK -> I also think this is correct, but want to double check
+// median()
+template <typename T>
+size_t MySet<T>::median() const
+{
+    // sort array first
+    selectionSort();
+    // find mid-point and return it
+    return items[count / 2];
+}

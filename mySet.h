@@ -60,29 +60,29 @@ namespace Set
         // ======= SORTING ========
 
         // bubbleSort() -> standard
-        void bubbleSort();
+        void bubbleSort() const;
 
         // bidirectionalBubbleSort() -> inner loop carry largest item to the right, inner loop will carry smallest item to the left
-        void bidirectionalBubbleSort();
+        void bidirectionalBubbleSort() const;
 
         // insertionSort() -> standard
-        void insertionSort();
+        void insertionSort() const;
 
         // insertionSortVerbose() -> counts the number of copies and comparisons it makes during a sort and displays the totals
-        void insertionSortVerbose();
+        void insertionSortVerbose() const;
 
         // selectionSort() -> standard
-        void selectionSort();
+        void selectionSort() const;
 
         //oddEven() -> google what this is supposed to look like
-        void oddEven();
+        void oddEven() const;
 
         // ======== ADDITIONAL METHODS ===========
         // swap()
-        void swap(size_t index);
+        void swap(size_t indexOne, size_t indexTwo) const;
 
         // median() -> returns the median value of a set
-        void median();
+        size_t median() const;
     };
 }
 
