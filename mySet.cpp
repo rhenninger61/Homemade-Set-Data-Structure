@@ -21,6 +21,10 @@ MySet<T>::MySet(): MySet(DEFAULT_CAPACITY)
 template <typename T>
 MySet<T>::MySet(const size_t capacity)
 {
+    if(capacity == std::string::npos)
+    {
+        throw std::invalid_argument("capacity must be positive");
+    }
     this->capacity = capacity;
     this->count = 0;
     this->items = new T[capacity];
@@ -35,7 +39,7 @@ MySet<T>::~MySet()
 
 // Indexing
 template <typename T>
-size_t& MySet<T>::operator[](const size_t index)
+size_t MySet<T>::operator[](const size_t index)
 {
     if(index >= count)
     {
@@ -48,6 +52,12 @@ size_t& MySet<T>::operator[](const size_t index)
 template <typename T>
 void MySet<T>::grow()
 {
+    //Prevents bug if user puts 0 as capacity
+    if(capacity == 0)
+    {
+        capacity = 1;
+    }
+
     // Allocate memory for a new array
     T* newItems = new T[capacity * 2];
 
@@ -102,23 +112,34 @@ size_t MySet<T>::find(const T& item) const
     return std::string::npos; //std::string::npos returns -1, for checking if an item is not in an array (same type as index)
 }
 
-// ASK NICK -> I think it's right, I just want to double check
 // insert() -> no dupes allowed, only argument is the item itself
 template <typename T>
 void MySet<T>::insert(const T& item)
 {
-    // won't add the item if it already exists
+    insert(item, count);
+}
+
+template <typename T>
+void MySet<T>::insert(const T& item, const size_t index)
+{
+    // checks if item already exists
     if(find(item) == std::string::npos)
     {
-        return;
+        // increases capacity if capacity is reached
+        if(count + 1 >= capacity)
+        {
+            grow();
+        }
+        // move items over
+        for (size_t i = count; i > index; i--)
+        {
+            items[i] = items[i - 1];
+        }
+        // add item at given index
+        items[index] = item;
+        //increment count
+        count++;
     }
-    // increases capacity if capacity is reached
-    if(count + 1 >= capacity)
-    {
-        grow();
-    }
-
-    items[count + 1] = item;
 }
 
 // removeAt() -> takes index as argument
@@ -158,6 +179,7 @@ template <typename T>
 void MySet<T>::clear()
 {
     delete[] items;
+    items = new T[capacity]; // reallocate memory for set
     count = 0;
 }
 
@@ -173,7 +195,7 @@ std::string MySet<T>::toString() const
 
     for(size_t i = 0; i < count; ++i)
     {
-        str += std::to_string(items[i] + " ");
+        str += std::to_string(items[i]) + " ";
     }
     return str;
 }
@@ -182,7 +204,7 @@ std::string MySet<T>::toString() const
 
 // bubbleSort() -> standard
 template <typename T>
-void MySet<T>::bubbleSort() const
+void MySet<T>::bubbleSort()
 {
     bool sorted = false;
     int unsortedUntilIndex = count - 1;
@@ -191,7 +213,7 @@ void MySet<T>::bubbleSort() const
     {
         sorted = true; // prove me wrong!
 
-        for(size_t i = 0; i < unsortedUntilIndex; ++i)
+        for(size_t i = 0; i < unsortedUntilIndex; i++)
         {
             if(items[i] > items[i + 1]) // check if value to left is greater than value to the right
             {
@@ -205,10 +227,9 @@ void MySet<T>::bubbleSort() const
     }
 }
 
-// ASK NICK -> I think it's right, I just want to double-check
 // bidirectionalBubbleSort() -> inner loop carry the largest item to the right, inner loop will carry the smallest item to the left
 template <typename T>
-void MySet<T>::bidirectionalBubbleSort() const
+void MySet<T>::bidirectionalBubbleSort()
 {
     bool sorted = false;
     int largeUnsortedUntilIndex = count - 1;
@@ -248,16 +269,16 @@ void MySet<T>::bidirectionalBubbleSort() const
 
 // insertionSort() -> standard
 template <typename T>
-void MySet<T>::insertionSort() const
+void MySet<T>::insertionSort()
 {
-    for(size_t i = 1; i < count; ++i)
+    for(size_t i = 1; i < count; i++)
     {
         size_t j = i - 1;
         T temp = items[i]; // references current lowest number so it doesn't get lost
 
         //looks at element to the left and sees if there is anything greater than it
         // if not true, either the end of the array has been reached or a value has been found that is less than that value
-        for(; j >= 0 && items[j] > items[j + 1]; --j)
+        for(; j !=std::string::npos && items[j] > items[j + 1]; j--)
         {
             // perform a shift to the right
             items[j + 1] = items[j];
@@ -269,10 +290,9 @@ void MySet<T>::insertionSort() const
 }
 
 // ASK NICK -> I'm not 100% sure I put the counters in the right spots
-    // also... why is it mad? I have this comparison in the C# code, is it not necessary in C++?
 // insertionSortVerbose() -> counts the number of copies and comparisons it makes during a sort and displays the totals
 template <typename T>
-void MySet<T>::insertionSortVerbose() const
+void MySet<T>::insertionSortVerbose()
 {
     size_t numberOfCopies = 0;
     size_t numberOfComparisons = 0;
@@ -284,7 +304,7 @@ void MySet<T>::insertionSortVerbose() const
 
         //looks at element to the left and sees if there is anything greater than it
         // if not true, either the end of the array has been reached or a value has been found that is less than that value
-        for(; j >= 0 && items[j] > temp; --j)
+        for(; j !=std::string::npos && items[j] > temp; --j)
         {
             // perform a shift to the right
             items[j + 1] = items[j];
@@ -302,10 +322,10 @@ void MySet<T>::insertionSortVerbose() const
 
 // selectionSort() -> standard
 template <typename T>
-void MySet<T>::selectionSort() const
+void MySet<T>::selectionSort()
 {
     // going left to right through the array
-    for(size_t i = 1; i < count; ++i)
+    for(size_t i = 0; i < count; ++i)
     {
         size_t minIndex = i; // min value always starts at the beginning of the array
 
@@ -323,10 +343,9 @@ void MySet<T>::selectionSort() const
     }
 }
 
-// ASK NICK -> I think this is right? Do I need another loop to check the values once they're brought back together?
 //oddEven()
 template <typename T>
-void MySet<T>::oddEven() const
+void MySet<T>::oddEven()
 {
     bool sorted = false;
 
@@ -335,45 +354,52 @@ void MySet<T>::oddEven() const
         sorted = true;
 
         //odd index sort
-        for(size_t i = 1; i < count; i+=2)
+        for(size_t i = 1; i < count - 1; i+=2)
         {
             if(items[i] > items[i + 1]) // checks if value to the right is greater
             {
                 // larger value moved to the right
                 swap(items[i], items[i + 1]);
-                sorted = false; // I was proved wrong :(
+                sorted = false; // I was proven wrong :(
             }
         }
         // even index sort
-        for(size_t i = 0; i < count; i+=2) // checks if value to the right is greater
+        for(size_t i = 0; i < count - 1; i+=2) // checks if value to the right is greater
         {
-            // larger value moved to the right
-            swap(items[i], items[i + 1]);
-            sorted = false; // I was proved wrong :(
+            if(items[i] > items[i + 1]) // checks if value to the right is greater
+            {
+                // larger value moved to the right
+                swap(items[i], items[i + 1]);
+                sorted = false; // I was proven wrong :(
+            }
         }
     }
 }
 
 // ======== ADDITIONAL METHODS ===========
-// ASK NICK ->  I think it's right, I just want to double check, specifically T* and *temp as opposed to just T and temp
 // swap()
 template <typename T>
-void MySet<T>::swap(size_t indexOne, size_t indexTwo) const
+void MySet<T>::swap(size_t indexOne, size_t indexTwo)
 {
-    T* temp = items[indexOne]; // saves indexOne to temp variable
+    T& temp = items[indexOne]; // saves indexOne to temp variable
     items[indexOne] = items[indexTwo]; // assigns value of indexOne to the value at indexTwo
-    items[indexTwo] = *temp; //reassigns the value of indexTwo to the value that was saved for indexOne
+    items[indexTwo] = temp; //reassigns the value of indexTwo to the value that was saved for indexOne
 }
 
-// ASK NICK -> I also think this is correct, but want to double check
 // median()
 template <typename T>
-size_t MySet<T>::median() const
+size_t MySet<T>::median()
 {
     // sort array first
-    selectionSort();
-    // find mid-point and return it
-    return items[count / 2];
-}
+    bubbleSort(); // best case is constant time
 
-template class MySet<int>;
+    // find mid-point and return it
+    if(count % 2 == 0)
+    {
+        return (items[count / 2 - 1] + items[count / 2]) / 2;
+    }
+    else
+    {
+        return count / 2;
+    }
+}

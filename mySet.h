@@ -16,7 +16,7 @@ namespace Set
         size_t count = 0; // initializing the size of the list
         size_t capacity = 0; // initializing the capacity to be the same size as count
         // swap()
-        void swap(size_t indexOne, size_t indexTwo) const;
+        void swap(size_t indexOne, size_t indexTwo);
         // grow()
         void grow(); // increase capacity when it is reached
         // shrink()
@@ -29,26 +29,28 @@ namespace Set
         // Default Constructor -> capacity for 4 elements
         MySet();
 
-        // Capacity Constructor
-        explicit MySet(const size_t capacity);
+        // Capacity Constructor -> const not needed in argument because it's just a copy and who cares
+        explicit MySet(size_t capacity);
 
         //Deconstructor
         ~MySet();
 
         // Indexing
-        size_t& operator[](const size_t index);
+        size_t operator[](size_t index);
 
         // find() -> item as argument, returns index
-        size_t find(const T& item) const;
+        [[nodiscard]] size_t find(const T& item) const;
 
-        // insert() -> no dupes allowed, only argument is the item itself
+        // Inserts -> no dupes allowed, only argument is the item itself
         void insert(const T& item);
+
+        void insert(const T& item, size_t index);
 
         // remove() -> takes item as argument
         bool remove(const T& item);
 
         // removeAt() -> takes index as argument
-        void removeAt(const size_t index);
+        void removeAt(size_t index);
 
         // clear() -> clears the set
         void clear();
@@ -57,29 +59,30 @@ namespace Set
         [[nodiscard]] std::string toString() const;
 
         // median() -> returns the median value of a set
-        [[nodiscard]] size_t median() const;
+        [[nodiscard]] size_t median();
 
         // ======= SORTING ========
 
         // bubbleSort() -> standard
-        void bubbleSort() const;
+        void bubbleSort();
 
         // bidirectionalBubbleSort() -> inner loop carry largest item to the right, inner loop will carry smallest item to the left
-        void bidirectionalBubbleSort() const;
+        void bidirectionalBubbleSort();
 
         // insertionSort() -> standard
-        void insertionSort() const;
+        void insertionSort();
 
         // insertionSortVerbose() -> counts the number of copies and comparisons it makes during a sort and displays the totals
-        void insertionSortVerbose() const;
+        void insertionSortVerbose();
 
         // selectionSort() -> standard
-        void selectionSort() const;
+        void selectionSort();
 
         //oddEven() -> google what this is supposed to look like
-        void oddEven() const;
+        void oddEven();
 
     };
+    template class MySet<int>;
 }
 
 
