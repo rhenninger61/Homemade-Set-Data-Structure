@@ -62,7 +62,7 @@ namespace Set
         [[nodiscard]] std::string toString() const;
 
         // median() -> returns the median value of a set
-        [[nodiscard]] size_t median();
+        [[nodiscard]] double median();
 
         // ======= SORTING ========
 

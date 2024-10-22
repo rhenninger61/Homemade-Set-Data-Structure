@@ -400,7 +400,7 @@ void MySet<T>::swap(size_t indexOne, size_t indexTwo)
 
 // median()
 template <typename T>
-size_t MySet<T>::median()
+double MySet<T>::median()
 {
     // sort array first
     bubbleSort(); // best case is constant time
@@ -408,7 +408,7 @@ size_t MySet<T>::median()
     // find mid-point and return it
     if(count % 2 == 0)
     {
-        return (items[count / 2 + 1] + items[count / 2]) / 2;
+        return static_cast<double>(items[count / 2 - 1] + items[count / 2]) / 2;;
     }
     else
     {

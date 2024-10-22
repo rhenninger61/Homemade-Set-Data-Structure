@@ -83,12 +83,12 @@ int main()
     testingBidirectionalBubbleSort(setCpy2);
     setCpy2.clear();
 
-    // ASK NICK -> it is only kind of sorting and seems a little random on where it's putting the values?
+    //InsertionSort -> works as intended now
     MySet<int> setCpy3 = MySet(set);
     testingInsertionSort(setCpy3);
     setCpy3.clear();
 
-    // ASK NICK -> it is only kind of sorting and seems a little random on where it's putting the values?
+    //InsertionSortVerbose -> works as intended now
     MySet<int> setCpy4 = MySet(set);
     testingInsertionSortVerbose(setCpy4);
     setCpy4.clear();
@@ -102,6 +102,14 @@ int main()
     MySet<int> setCpy6 = MySet(set);
     testingOddEven(setCpy6);
     setCpy6.clear();
+
+    // Median even element test
+    set.insert(20);
+    cout << "Median even amount: " << set.median() << endl;
+
+    // Median odd element test -> had to put at end due to sorting in function
+    set.remove(20);
+    cout << "Median odd amount: " << set.median() << endl;
 
     return 0;
 }
