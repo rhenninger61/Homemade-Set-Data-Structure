@@ -30,6 +30,18 @@ MySet<T>::MySet(const size_t capacity)
     this->items = new T[capacity];
 }
 
+//Copy Constructor
+template <typename T>
+MySet<T>::MySet(const MySet& other)
+    : count(other.count), capacity(other.capacity)
+{
+    items = new T[capacity];
+    for(size_t i = 0; i < count; ++i)
+    {
+        items[i] = other.items[i];
+    }
+}
+
 //Deconstructor
 template <typename T>
 MySet<T>::~MySet()
@@ -218,7 +230,7 @@ void MySet<T>::bubbleSort()
             if(items[i] > items[i + 1]) // check if value to left is greater than value to the right
             {
                 // larger value moved to the right
-                swap(items[i], items[i + 1]);
+                swap(i, i + 1);
                 sorted = false; // I was proved wrong :(
             }
         }
@@ -245,7 +257,7 @@ void MySet<T>::bidirectionalBubbleSort()
             if(items[i] > items[i + 1]) // check if value to right is greater than value to the left
             {
                 // larger value moved to the right
-                swap(items[i], items[i + 1]);
+                swap(i, i + 1);
                 sorted = false; // I was proved wrong :(
             }
         }
@@ -258,7 +270,7 @@ void MySet<T>::bidirectionalBubbleSort()
             if(items[i] < items[i - 1]) // checks if value to the right is smaller than value to the left
             {
                 // moves smaller value to the left
-                swap(items[i], items[i - 1]);
+                swap(i, i - 1);
                 sorted = false; // I was proved wrong :(
             }
         }
@@ -278,7 +290,7 @@ void MySet<T>::insertionSort()
 
         //looks at element to the left and sees if there is anything greater than it
         // if not true, either the end of the array has been reached or a value has been found that is less than that value
-        for(; j !=std::string::npos && items[j] > items[j + 1]; j--)
+        for(; j !=std::string::npos && items[j] > temp; --j)
         {
             // perform a shift to the right
             items[j + 1] = items[j];
@@ -338,7 +350,7 @@ void MySet<T>::selectionSort()
         }
         if(minIndex != i) // performs a swap if items[j] is smaller than items[i]
         {
-            swap(items[i], items[minIndex]);
+            swap(i, minIndex);
         }
     }
 }
@@ -359,7 +371,7 @@ void MySet<T>::oddEven()
             if(items[i] > items[i + 1]) // checks if value to the right is greater
             {
                 // larger value moved to the right
-                swap(items[i], items[i + 1]);
+                swap(i, i + 1);
                 sorted = false; // I was proven wrong :(
             }
         }
@@ -369,7 +381,7 @@ void MySet<T>::oddEven()
             if(items[i] > items[i + 1]) // checks if value to the right is greater
             {
                 // larger value moved to the right
-                swap(items[i], items[i + 1]);
+                swap(i, i + 1);
                 sorted = false; // I was proven wrong :(
             }
         }
@@ -381,7 +393,7 @@ void MySet<T>::oddEven()
 template <typename T>
 void MySet<T>::swap(size_t indexOne, size_t indexTwo)
 {
-    T& temp = items[indexOne]; // saves indexOne to temp variable
+    T temp = items[indexOne]; // saves indexOne to temp variable
     items[indexOne] = items[indexTwo]; // assigns value of indexOne to the value at indexTwo
     items[indexTwo] = temp; //reassigns the value of indexTwo to the value that was saved for indexOne
 }
@@ -396,10 +408,10 @@ size_t MySet<T>::median()
     // find mid-point and return it
     if(count % 2 == 0)
     {
-        return (items[count / 2 - 1] + items[count / 2]) / 2;
+        return (items[count / 2 + 1] + items[count / 2]) / 2;
     }
     else
     {
-        return count / 2;
+        return items[count / 2];
     }
 }

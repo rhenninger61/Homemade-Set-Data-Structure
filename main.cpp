@@ -14,11 +14,23 @@ void testingBubbleSort(MySet<int> setCpy)
     setCpy.bubbleSort();
     cout << "After Bubble Sort: "<< setCpy.toString() <<endl;
 }
+void testingBidirectionalBubbleSort(MySet<int> setCpy)
+{
+    cout << "Before Bidirectional Sort: "<< setCpy.toString() <<endl;
+    setCpy.bidirectionalBubbleSort();
+    cout << "After Bidirectional Sort: "<< setCpy.toString() <<endl;
+}
 void testingInsertionSort(MySet<int> setCpy)
 {
     cout << "Before Insertion Sort: "<< setCpy.toString() <<endl;
     setCpy.insertionSort();
     cout << "After Insertion Sort: "<< setCpy.toString() <<endl;
+}
+void testingInsertionSortVerbose(MySet<int> setCpy)
+{
+    cout << "Before Insertion Sort Verbose: "<< setCpy.toString() << endl;
+    setCpy.insertionSortVerbose();
+    cout << "After Insertion Sort Verbose: " << setCpy.toString() << endl;
 }
 void testingSelectionSort(MySet<int> setCpy)
 {
@@ -61,20 +73,36 @@ int main()
     set.removeAt(5);
     cout << "Removing int 20 at the 5th index: " << set.toString() << endl;
 
-    MySet<int> setCpy = set;
-    // ASK NICK -> gets error Signal: SIGSEGV (Segmentation fault) during second iteration in the swap step?
-    //testingBubbleSort(setCpy);
+    //BubbleSort -> works as intended now
+    MySet<int> setCpy = MySet(set);
+    testingBubbleSort(setCpy);
+    setCpy.clear();
 
-    MySet<int> setCpy2 = set;
+    //BidirectionalBubbleSort -> works as intended now
+    MySet<int> setCpy2 = MySet(set);
+    testingBidirectionalBubbleSort(setCpy2);
+    setCpy2.clear();
+
     // ASK NICK -> it is only kind of sorting and seems a little random on where it's putting the values?
-    //testingInsertionSort(setCpy);
+    MySet<int> setCpy3 = MySet(set);
+    testingInsertionSort(setCpy3);
+    setCpy3.clear();
 
-    MySet<int> setCpy3 = set;
-    // ASK NICK -> is there a problem with my swap?
-    //testingSelectionSort(setCpy);
+    // ASK NICK -> it is only kind of sorting and seems a little random on where it's putting the values?
+    MySet<int> setCpy4 = MySet(set);
+    testingInsertionSortVerbose(setCpy4);
+    setCpy4.clear();
 
-    MySet<int> setCpy4 = set;
-    testingOddEven(setCpy);
+    // SelectionSort -> works as intended now
+    MySet<int> setCpy5 = MySet(set);
+    testingSelectionSort(setCpy5);
+    setCpy5.clear();
+
+    // OddEven SOrt -> works as intended now
+    MySet<int> setCpy6 = MySet(set);
+    testingOddEven(setCpy6);
+    setCpy6.clear();
+
     return 0;
 }
 

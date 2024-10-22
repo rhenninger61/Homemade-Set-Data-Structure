@@ -35,6 +35,9 @@ namespace Set
         //Deconstructor
         ~MySet();
 
+        // Copy Constructor
+        MySet(const MySet& other);
+
         // Indexing
         size_t operator[](size_t index);
 
