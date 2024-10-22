@@ -65,7 +65,6 @@ namespace Set
         [[nodiscard]] double median();
 
         // ======= SORTING ========
-
         // bubbleSort() -> standard
         void bubbleSort();
 
@@ -81,7 +80,7 @@ namespace Set
         // selectionSort() -> standard
         void selectionSort();
 
-        //oddEven() -> google what this is supposed to look like
+        //oddEven() -> iterates through every other index and then compares to the value next to it, the starting value determines the odd even indexes
         void oddEven();
 
     };

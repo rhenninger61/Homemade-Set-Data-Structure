@@ -408,7 +408,7 @@ double MySet<T>::median()
     // find mid-point and return it
     if(count % 2 == 0)
     {
-        return static_cast<double>(items[count / 2 - 1] + items[count / 2]) / 2;;
+        return static_cast<double>(items[count / 2 - 1] + items[count / 2]) / 2;
     }
     else
     {
